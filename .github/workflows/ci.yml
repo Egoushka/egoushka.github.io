@@ -9,9 +9,6 @@ jobs:
   build-and-deploy:
     name: Deploy website and sentry
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18]
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
@@ -24,28 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.2.2
-        with:
-          version: 7
+      - uses: ng-easy/npm-setup@v1.7.2
 
-      - name: node_modules cache
-        uses: actions/cache@v3
-        id: node_modules-cache
-        with:
-          path: ./node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-      - name: pnpm cache
-        if: steps.node_modules-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        id: pnpm-store
-        with:
-          path: ~/.pnpm-store/v3
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+      - name: NPM install
+        uses: bahmutov/npm-install@v1.6.0
 
       - name: Build
         run: npx nx deploy portfolio
