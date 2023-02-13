@@ -27,11 +27,9 @@ jobs:
         uses: bahmutov/npm-install@v1.6.0
 
       - name: Build
-        run: npx nx deploy portfolio
+        run: npm build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: actions/deploy-pages@v1.2.4
         with:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          BRANCH: main
-          FOLDER: docs
+          token: ${{ secrets.GH_TOKEN }}
